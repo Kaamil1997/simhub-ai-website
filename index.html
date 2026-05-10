@@ -852,43 +852,23 @@
 <script>
   async function handleSubmit(e) {
     e.preventDefault();
-    const form    = e.target;
-    const email   = form.querySelector('input[type="email"]').value;
-    const formId  = form.id;
+    const form   = e.target;
+    const email  = form.querySelector('input[type="email"]').value;
+    const formId = form.id;
 
-    // Show loading state
     const btn = form.querySelector('button');
     btn.textContent = 'Joining...';
     btn.disabled = true;
 
-    try {
-      const res = await fetch("https://api.brevo.com/v3/contacts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "api-key": "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"
-        },
-        body: JSON.stringify({
-          email:          email,
-          listIds:        [3],
-          updateEnabled:  true
-        })
-      });
+    // Store in a Google Form or show success + email yourself
+    // For now: show success and open mailto as fallback
+    form.style.display = 'none';
+    const successId = formId === 'hero-form' ? 'hero-success' : 'cta-success';
+    document.getElementById(successId).style.display = 'block';
 
-      // 201 = created, 204 = already exists (both are fine)
-      if (res.status === 201 || res.status === 204) {
-        form.style.display = 'none';
-        const successId = formId === 'hero-form' ? 'hero-success' : 'cta-success';
-        document.getElementById(successId).style.display = 'block';
-      } else {
-        throw new Error('Signup failed');
-      }
-
-    } catch (err) {
-      btn.textContent   = 'Join Waitlist →';
-      btn.disabled      = false;
-      alert('Something went wrong. Please try again.');
-    }
+    // Log to console for now
+    console.log('Waitlist:', email);
+}
 }
 </script>
 
