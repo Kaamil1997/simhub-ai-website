@@ -850,22 +850,46 @@
 </footer>
 
 <script>
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    const form   = e.target;
-    const formId = form.id;
-    const email  = form.querySelector('input[type="email"]').value;
+    const form    = e.target;
+    const email   = form.querySelector('input[type="email"]').value;
+    const formId  = form.id;
 
-    // In production: send to your backend or Mailchimp/Brevo API
-    // For now: show success message
-    form.style.display = 'none';
+    // Show loading state
+    const btn = form.querySelector('button');
+    btn.textContent = 'Joining...';
+    btn.disabled = true;
 
-    const successId = formId === 'hero-form' ? 'hero-success' : 'cta-success';
-    document.getElementById(successId).style.display = 'block';
+    try {
+      const res = await fetch("https://api.brevo.com/v3/contacts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "api-key": "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"
+        },
+        body: JSON.stringify({
+          email:          email,
+          listIds:        [3],
+          updateEnabled:  true
+        })
+      });
 
-    console.log('Waitlist signup:', email);
-    // TODO: POST to your FastAPI /waitlist endpoint or email service
-  }
+      // 201 = created, 204 = already exists (both are fine)
+      if (res.status === 201 || res.status === 204) {
+        form.style.display = 'none';
+        const successId = formId === 'hero-form' ? 'hero-success' : 'cta-success';
+        document.getElementById(successId).style.display = 'block';
+      } else {
+        throw new Error('Signup failed');
+      }
+
+    } catch (err) {
+      btn.textContent   = 'Join Waitlist →';
+      btn.disabled      = false;
+      alert('Something went wrong. Please try again.');
+    }
+}
 </script>
 
 </body>
