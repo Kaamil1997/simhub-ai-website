@@ -860,14 +860,32 @@
     btn.textContent = 'Joining...';
     btn.disabled = true;
 
-    // Store in a Google Form or show success + email yourself
-    // For now: show success and open mailto as fallback
-    form.style.display = 'none';
-    const successId = formId === 'hero-form' ? 'hero-success' : 'cta-success';
-    document.getElementById(successId).style.display = 'block';
+    try {
+      const brevoForm = new FormData();
+      brevoForm.append("EMAIL", email);
+      brevoForm.append("email_address_check", "");
+      brevoForm.append("locale", "en");
+      brevoForm.append("html_type", "simple");
 
-    // Log to console for now
-    console.log('Waitlist:', email);
+      await fetch(
+        "https://f37ae80a.sibforms.com/serve/MUIFAA7rIAqPwuBSOhqX-jOTSEzsG1YHrZCgPADhjt1lfAXZzYuhr_YxZlaATTziDFUKLUNKBmtsgM_yOVhgiV8YmG0PSHikoTtCaIpfEoI_MuRagswLbKu0t7qxYqCc1E3XQVmdtQ4iM3eF4g33v2sZWe3n581KR3uju65nI_aT_wLZH20WJ03q1AwKw4AQKktzCkALqxwGcYcOMw==",
+        {
+          method: "POST",
+          body:   brevoForm,
+          mode:   "no-cors"   // Brevo doesn't send CORS headers on this endpoint
+        }
+      );
+
+      // no-cors means we can't read the response — assume success
+      form.style.display = 'none';
+      const successId = formId === 'hero-form' ? 'hero-success' : 'cta-success';
+      document.getElementById(successId).style.display = 'block';
+
+    } catch (err) {
+      btn.textContent = 'Join Waitlist →';
+      btn.disabled    = false;
+      alert('Something went wrong. Please try again.');
+    }
 }
 }
 </script>
