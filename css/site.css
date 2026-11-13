@@ -367,3 +367,24 @@ footer { border-top: 1px solid var(--border); padding: 32px 0; position: relativ
 @media (max-width: 400px) {
   .nav-inner .btn { padding: 8px 12px; font-size: 13px; }
 }
+
+/* ── Solver availability labels (hero + solvers) ─────────────── */
+.hero-avail {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px 10px;
+  font-family: 'DM Mono', monospace; font-size: 12.5px; color: var(--text-2);
+  margin: -16px auto 32px; max-width: 640px;
+}
+.hero-avail .avail.live    { color: var(--green); }
+.hero-avail .avail.next    { color: var(--accent); }
+.hero-avail .avail.planned { color: var(--text-1); }
+.hero-avail .sep { color: var(--text-2); }
+
+ul.solver-chips { list-style: none; }
+.solver-chip .status {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+  border-radius: 100px; padding: 1px 8px; border: 1px solid currentColor; opacity: 0.9;
+}
+.result-types-title { font-size: 14px; font-weight: 600; margin-top: 40px; color: var(--text-0); }
+.result-types-title span { color: var(--green); font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; }
+.result-types-title + .result-types { margin-top: 12px; }
+@media (max-width: 768px) { .hero-avail { margin-top: -12px; font-size: 12px; } .hero-avail .sep { display: none; } .hero-avail { flex-direction: column; gap: 4px; } }

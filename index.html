@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SimHub — Track and compare your LS-DYNA runs</title>
-  <meta name="description" content="SimHub keeps a searchable record of your LS-DYNA runs: validated key results, input deck, units, side-by-side comparison and CSV export. Extraction runs on your machine; only a ~50 KB summary per run is uploaded to a server in Germany. Private beta."/>
+  <title>SimHub — GitHub for your FEA results. Starting with LS-DYNA.</title>
+  <meta name="description" content="SimHub keeps a searchable, comparable record of your FEA runs: validated key results, input deck, units, side-by-side comparison and CSV export. Today: LS-DYNA. Next: Abaqus. Planned: Ansys, Nastran, OpenFOAM and more. Extraction runs on your machine; only a ~50 KB summary per run is uploaded to a server in Germany. Private beta."/>
   <link rel="canonical" href="https://simhub-ai.de/"/>
   <meta name="theme-color" content="#0a0e14"/>
   <meta property="og:type" content="website"/>
   <meta property="og:url" content="https://simhub-ai.de/"/>
   <meta property="og:site_name" content="SimHub"/>
-  <meta property="og:title" content="SimHub — Track and compare your LS-DYNA runs"/>
-  <meta property="og:description" content="A searchable record of every LS-DYNA run: validated results, input deck and units, side by side. Local extraction, ~50 KB summary per run, hosted in Germany. Private beta."/>
+  <meta property="og:title" content="SimHub — GitHub for your FEA results. Starting with LS-DYNA."/>
+  <meta property="og:description" content="A searchable, comparable record of every FEA run: validated results, input deck and units, side by side. Today: LS-DYNA · Next: Abaqus · Planned: Ansys, Nastran, OpenFOAM and more. Local extraction, hosted in Germany. Private beta."/>
   <meta property="og:image" content="https://simhub-ai.de/img/og-image.jpg"/>
   <meta property="og:image:width" content="1200"/>
   <meta property="og:image:height" content="630"/>
@@ -50,15 +50,18 @@
 <!-- ── Hero ────────────────────────────────────────────────────────────── -->
 <section class="hero">
   <div class="container">
-    <div class="hero-eyebrow">Private beta · LS-DYNA</div>
+    <div class="hero-eyebrow">Private beta · LS-DYNA today, more solvers coming</div>
     <h1>
-      Every LS-DYNA run,<br/>
-      <em>findable</em> and comparable
+      <em>GitHub</em> for your<br/>
+      FEA results
     </h1>
     <p class="hero-sub">
-      SimHub keeps a searchable record of your simulation runs: key results, input deck and units,
-      next to each other. A small agent does the extraction on your machine. Only a ~50&nbsp;KB summary
-      per run is uploaded, and your d3plot files stay where they are.
+      SimHub keeps a searchable, comparable record of every simulation run: key results, the input deck
+      and units, side by side. A small agent does the extraction on your machine and uploads only a
+      ~50&nbsp;KB summary per run, so your result files stay where they are. We're starting with LS-DYNA.
+    </p>
+    <p class="hero-avail" aria-label="Solver availability">
+      <span class="avail live">Today: LS-DYNA</span><span class="sep">·</span><span class="avail next">Next: Abaqus</span><span class="sep">·</span><span class="avail planned">Planned: Ansys, Nastran, OpenFOAM and more</span>
     </p>
 
     <form class="email-form waitlist-form" id="hero-form" novalidate>
@@ -98,7 +101,7 @@
       </li>
       <li class="trust-item">
         <span class="trust-check" aria-hidden="true">✓</span>
-        <span>Results validated against <strong>LS-PrePost</strong></span>
+        <span>LS-DYNA results validated against <strong>LS-PrePost</strong></span>
       </li>
       <li class="trust-item">
         <span class="trust-check" aria-hidden="true">✓</span>
@@ -127,7 +130,7 @@
           <li><span class="pain-icon" aria-hidden="true">✕</span><span>The input deck that produced a result isn't recorded next to it</span></li>
         </ul>
       </div>
-      <div class="terminal" role="img" aria-label="Illustration: a folder full of inconsistently named d3plot archives">
+      <div class="terminal" role="img" aria-label="Illustration: a folder full of inconsistently named result archives">
         <div class="terminal-bar">
           <div class="dot" style="background:#ff5f57"></div>
           <div class="dot" style="background:#ffbd2e"></div>
@@ -163,8 +166,8 @@
       <div class="step">
         <div class="step-num">01 —</div>
         <h3>Extract locally</h3>
-        <p>The SimHub agent (Python) runs on your workstation. It reads the LS-DYNA d3plot results and the .k input deck where they already are. The result files are never uploaded.</p>
-        <div class="step-code">d3plot + .k → summary</div>
+        <p>The SimHub agent (Python) runs on your workstation. It reads the solver's result files and input deck where they already are. Today that means LS-DYNA d3plot and .k files. The result files are never uploaded.</p>
+        <div class="step-code">results + deck → summary</div>
       </div>
       <div class="step">
         <div class="step-num">02 —</div>
@@ -187,7 +190,7 @@
   <div class="container">
     <p class="section-label">Features</p>
     <h2>What's in v0.12 today</h2>
-    <p class="section-sub">Everything below is live in the private beta. No mock-ups: these are screenshots of the app.</p>
+    <p class="section-sub">Everything below is live in the private beta, shown here with LS-DYNA, the first supported solver. No mock-ups: these are screenshots of the app.</p>
 
     <div class="screens">
       <div class="screen-row">
@@ -211,7 +214,7 @@
       <div class="screen-row flip">
         <div class="screen-text">
           <h3>Two runs, side by side</h3>
-          <p>Resultant displacement and peak von Mises stress over time on shared axes, the step-by-step numbers, and all six result values for A and B next to each other.</p>
+          <p>Resultant displacement and peak von Mises stress over time on shared axes, the step-by-step numbers, and the validated result values for A and B next to each other (six for LS-DYNA today).</p>
           <ul>
             <li>Copy the table or download it as CSV</li>
             <li>A per-step numbers table under the charts</li>
@@ -229,7 +232,7 @@
       <div class="screen-row">
         <div class="screen-text">
           <h3>Input deck traceability</h3>
-          <p>SimHub reads the .k input deck along with the results, so each run records the model that produced it.</p>
+          <p>SimHub reads the input deck along with the results (the .k file for LS-DYNA today), so each run records the model that produced it.</p>
           <ul>
             <li>Materials, contacts and boundary conditions</li>
             <li>Termination time and unit system, marked when inferred from the deck</li>
@@ -248,8 +251,8 @@
     <div class="features-grid">
       <div class="feature">
         <div class="feature-icon" aria-hidden="true">✓</div>
-        <h3>Six validated result types</h3>
-        <p>Displacement, von Mises stress (solid and shell), kinetic, internal and total energy, and effective plastic strain, each checked against LS-PrePost.</p>
+        <h3>Validated result types</h3>
+        <p>For LS-DYNA today: displacement, von Mises stress (solid and shell), kinetic, internal and total energy, and effective plastic strain, each checked against LS-PrePost.</p>
       </div>
       <div class="feature">
         <div class="feature-icon" aria-hidden="true">⌕</div>
@@ -269,7 +272,7 @@
       <div class="feature">
         <div class="feature-icon" aria-hidden="true">◈</div>
         <h3>Deck traceability</h3>
-        <p>Materials, contacts, boundaries and units stored per run, read straight from the .k file.</p>
+        <p>Materials, contacts, boundaries and units stored per run, read straight from the input deck (.k for LS-DYNA today).</p>
       </div>
       <div class="feature">
         <div class="feature-icon" aria-hidden="true">⌂</div>
@@ -313,16 +316,20 @@
 <section id="solvers">
   <div class="container">
     <p class="section-label">Solver support</p>
-    <h2>LS-DYNA today. Abaqus next.</h2>
-    <p class="section-sub">SimHub reads native LS-DYNA output and input files: no export step, no format conversion.</p>
+    <h2>Designed to be solver-agnostic. Starting with LS-DYNA.</h2>
+    <p class="section-sub">The run record in SimHub doesn't depend on one solver. Each solver gets its own extractor that reads
+      native output and input files, with no export step and no format conversion. Only solvers marked <em>live</em> work today.</p>
 
-    <div class="solver-chips">
-      <div class="solver-chip live"><span class="chip-dot"></span>LS-DYNA (d3plot + .k) — live</div>
-      <div class="solver-chip next"><span class="chip-dot"></span>Abaqus (.odb) — next</div>
-      <div class="solver-chip"><span class="chip-dot"></span>Nastran (.op2) — planned</div>
-      <div class="solver-chip"><span class="chip-dot"></span>OpenFOAM — planned</div>
-    </div>
+    <ul class="solver-chips" aria-label="Solver availability">
+      <li class="solver-chip live"><span class="status">live</span>LS-DYNA (d3plot + .k)</li>
+      <li class="solver-chip next"><span class="status">next</span>Abaqus (.odb)</li>
+      <li class="solver-chip"><span class="status">planned</span>Ansys</li>
+      <li class="solver-chip"><span class="status">planned</span>Nastran (.op2)</li>
+      <li class="solver-chip"><span class="status">planned</span>OpenFOAM</li>
+      <li class="solver-chip"><span class="status">planned</span>and more</li>
+    </ul>
 
+    <h3 class="result-types-title">LS-DYNA result types <span>· live</span></h3>
     <div class="result-types" aria-label="LS-DYNA result types">
       <div class="result-type"><span>Displacement</span><span>✓ vs LS-PrePost</span></div>
       <div class="result-type"><span>von Mises stress (solid / shell)</span><span>✓ vs LS-PrePost</span></div>
@@ -332,8 +339,8 @@
       <div class="result-type"><span>Effective plastic strain</span><span>✓ vs LS-PrePost</span></div>
     </div>
 
-    <p class="not-yet"><strong>Not there yet:</strong> team sharing and project workspaces, Abaqus and any solver other
-      than LS-DYNA. For now every account is a single user and sees only their own runs.</p>
+    <p class="not-yet"><strong>Not there yet:</strong> any solver other than LS-DYNA (Abaqus is next), plus team sharing
+      and project workspaces. For now every account is a single user and sees only their own runs.</p>
   </div>
 </section>
 
