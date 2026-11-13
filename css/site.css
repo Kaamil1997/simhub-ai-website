@@ -336,11 +336,6 @@ footer { border-top: 1px solid var(--border); padding: 32px 0; position: relativ
 .legal ul { padding-left: 20px; margin-bottom: 12px; }
 .legal address { font-style: normal; color: var(--text-0); font-size: 15px; margin-bottom: 12px; line-height: 1.7; }
 .legal strong { color: var(--text-0); font-weight: 500; }
-.ph { font-family: 'DM Mono', monospace; font-size: 0.88em; color: var(--orange); background: rgba(255,140,66,0.08); border-radius: 4px; padding: 0 4px; }
-.draft-banner {
-  border: 1px solid rgba(255,140,66,0.4); background: rgba(255,140,66,0.08); color: var(--orange);
-  border-radius: var(--r); padding: 14px 18px; font-size: 14px; margin: 24px 0 8px; line-height: 1.55;
-}
 .legal .meta { font-size: 13px; color: var(--text-2); }
 
 /* ── Responsive ──────────────────────────────────────────────── */
