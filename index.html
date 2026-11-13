@@ -3,548 +3,33 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SimHub — GitHub for Simulation Data</title>
-  <meta name="description" content="Store, version and compare FEA simulation results from LS-DYNA and Abaqus. Built for structural engineers."/>
-  <meta property="og:title" content="SimHub — GitHub for Simulation Data"/>
-  <meta property="og:description" content="Store, version and compare FEA results. Built for LS-DYNA and Abaqus engineers."/>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    /* ── Reset & tokens ──────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:        #0a0e14;
-      --bg-1:      #0f1520;
-      --bg-2:      #141c2a;
-      --bg-3:      #1a2438;
-      --border:    rgba(255,255,255,0.07);
-      --border-hi: rgba(255,255,255,0.13);
-      --text-0:    #eef1f5;
-      --text-1:    #6b7d90;
-      --text-2:    #3a4a5c;
-      --accent:    #00d4ff;
-      --accent-dim:rgba(0,212,255,0.12);
-      --green:     #00e5a0;
-      --orange:    #ff8c42;
-      --red:       #ff4d6d;
-      --max:       1100px;
-      --r:         8px;
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text-0);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 16px;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .container { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
-    .mono      { font-family: 'DM Mono', monospace; }
-
-    /* ── Noise texture overlay ───────────────────────────────────── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0; pointer-events: none; z-index: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-      opacity: 0.4;
-    }
-
-    /* ── Nav ─────────────────────────────────────────────────────── */
-    nav {
-      position: sticky; top: 0; z-index: 100;
-      border-bottom: 1px solid var(--border);
-      background: rgba(10,14,20,0.85);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-
-    .nav-inner {
-      max-width: var(--max); margin: 0 auto; padding: 0 24px;
-      height: 60px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-
-    .logo {
-      display: flex; align-items: center; gap: 10px;
-      text-decoration: none;
-    }
-
-    .logo-mark {
-      width: 32px; height: 32px;
-      background: var(--accent);
-      border-radius: 7px;
-      display: flex; align-items: center; justify-content: center;
-    }
-
-    .logo-name {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 600; font-size: 17px;
-      color: var(--text-0); letter-spacing: -0.02em;
-    }
-
-    .nav-links {
-      display: flex; align-items: center; gap: 28px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      font-size: 14px; color: var(--text-1);
-      text-decoration: none; transition: color 0.15s;
-    }
-    .nav-links a:hover { color: var(--text-0); }
-
-    .btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px; font-weight: 500;
-      padding: 8px 18px; border-radius: var(--r);
-      border: none; cursor: pointer; transition: all 0.15s;
-      text-decoration: none;
-    }
-
-    .btn-primary {
-      background: var(--accent); color: #000;
-    }
-    .btn-primary:hover { background: #33dcff; transform: translateY(-1px); }
-
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--border-hi);
-      color: var(--text-0);
-    }
-    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
-
-    /* ── Hero ────────────────────────────────────────────────────── */
-    .hero {
-      padding: 100px 0 80px;
-      text-align: center;
-      position: relative;
-    }
-
-    /* Glow behind hero */
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 50%; transform: translateX(-50%);
-      width: 600px; height: 400px;
-      background: radial-gradient(ellipse, rgba(0,212,255,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: var(--accent-dim);
-      border: 1px solid rgba(0,212,255,0.2);
-      border-radius: 100px;
-      padding: 4px 14px; margin-bottom: 28px;
-      font-size: 12px; font-weight: 500; color: var(--accent);
-      font-family: 'DM Mono', monospace;
-    }
-
-    .hero-eyebrow::before {
-      content: '';
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--accent);
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%,100% { opacity:1; } 50% { opacity:0.3; }
-    }
-
-    h1 {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-size: clamp(40px, 6vw, 68px);
-      font-weight: 400; line-height: 1.1;
-      letter-spacing: -0.02em;
-      color: var(--text-0);
-      margin-bottom: 20px;
-    }
-
-    h1 em {
-      font-style: italic;
-      color: var(--accent);
-    }
-
-    .hero-sub {
-      font-size: 18px; color: var(--text-1);
-      max-width: 540px; margin: 0 auto 40px;
-      line-height: 1.65;
-    }
-
-    /* Email capture */
-    .email-form {
-      display: flex; gap: 10px;
-      max-width: 440px; margin: 0 auto 20px;
-    }
-
-    .email-input {
-      flex: 1;
-      background: var(--bg-2);
-      border: 1px solid var(--border-hi);
-      border-radius: var(--r);
-      padding: 12px 16px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px; color: var(--text-0);
-      outline: none; transition: border-color 0.15s;
-    }
-    .email-input::placeholder { color: var(--text-2); }
-    .email-input:focus { border-color: var(--accent); }
-
-    .email-form .btn-primary { padding: 12px 22px; font-size: 14px; white-space: nowrap; }
-
-    .hero-note {
-      font-size: 12px; color: var(--text-2);
-    }
-
-    /* Dashboard preview */
-    .dashboard-preview {
-      margin-top: 64px;
-      position: relative;
-    }
-
-    .dashboard-preview::before {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 50%; transform: translateX(-50%);
-      width: 80%; height: 60%;
-      background: radial-gradient(ellipse, rgba(0,212,255,0.06) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .preview-frame {
-      background: var(--bg-1);
-      border: 1px solid var(--border-hi);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
-    }
-
-    .preview-bar {
-      background: var(--bg-2);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
-      display: flex; align-items: center; gap: 8px;
-    }
-
-    .dot { width: 10px; height: 10px; border-radius: 50%; }
-
-    .preview-content {
-      padding: 20px;
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      gap: 16px;
-      min-height: 320px;
-    }
-
-    .preview-sidebar {
-      border-right: 1px solid var(--border);
-      padding-right: 16px;
-    }
-
-    .preview-run {
-      background: var(--bg-3);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      cursor: default;
-    }
-
-    .preview-run.active { border-color: var(--accent); background: rgba(0,212,255,0.06); }
-
-    .preview-run-label {
-      font-size: 9px; font-weight: 600;
-      color: var(--accent); font-family: 'DM Mono', monospace;
-      letter-spacing: 0.06em; margin-bottom: 4px;
-    }
-
-    .preview-run-val {
-      font-size: 13px; font-family: 'DM Mono', monospace;
-      color: var(--text-0); font-weight: 500;
-    }
-
-    .preview-charts {
-      display: flex; flex-direction: column; gap: 12px;
-    }
-
-    .preview-chart-header {
-      font-size: 9px; font-weight: 600; letter-spacing: 0.1em;
-      color: var(--text-2); text-transform: uppercase; margin-bottom: 8px;
-    }
-
-    /* SVG chart placeholders */
-    .chart-svg { width: 100%; height: 90px; }
-
-    /* ── Section shared ──────────────────────────────────────────── */
-    section { padding: 80px 0; }
-
-    .section-label {
-      font-size: 11px; font-weight: 600;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--accent); font-family: 'DM Mono', monospace;
-      margin-bottom: 14px;
-    }
-
-    h2 {
-      font-family: 'Instrument Serif', Georgia, serif;
-      font-size: clamp(28px, 4vw, 42px);
-      font-weight: 400; line-height: 1.2;
-      letter-spacing: -0.02em;
-      margin-bottom: 16px;
-    }
-
-    .section-sub {
-      font-size: 17px; color: var(--text-1);
-      max-width: 540px; line-height: 1.65;
-    }
-
-    /* ── Problem section ─────────────────────────────────────────── */
-    .problem { background: var(--bg-1); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-
-    .problem-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px; align-items: center;
-    }
-
-    .pain-list { list-style: none; margin-top: 28px; }
-
-    .pain-list li {
-      display: flex; align-items: flex-start; gap: 12px;
-      padding: 14px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 15px; color: var(--text-1);
-    }
-
-    .pain-list li:last-child { border-bottom: none; }
-
-    .pain-icon {
-      width: 20px; height: 20px; border-radius: 50%;
-      background: rgba(255,77,109,0.12);
-      border: 1px solid rgba(255,77,109,0.2);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; margin-top: 2px;
-      font-size: 10px; color: var(--red);
-    }
-
-    .terminal {
-      background: var(--bg);
-      border: 1px solid var(--border-hi);
-      border-radius: var(--r);
-      padding: 20px;
-      font-family: 'DM Mono', monospace;
-      font-size: 13px;
-    }
-
-    .terminal-bar {
-      display: flex; gap: 6px; margin-bottom: 16px;
-    }
-
-    .t-line { line-height: 1.8; }
-    .t-comment { color: var(--text-2); }
-    .t-cmd     { color: var(--accent); }
-    .t-out     { color: var(--green); }
-    .t-err     { color: var(--red); }
-    .t-path    { color: var(--orange); }
-
-    /* ── How it works ────────────────────────────────────────────── */
-    .steps {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px; margin-top: 48px;
-    }
-
-    .step {
-      background: var(--bg-1);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .step::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 2px;
-    }
-    .step:nth-child(1)::before { background: var(--accent); }
-    .step:nth-child(2)::before { background: var(--green); }
-    .step:nth-child(3)::before { background: var(--orange); }
-
-    .step-num {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px; font-weight: 500;
-      color: var(--text-2); margin-bottom: 16px;
-    }
-
-    .step-icon {
-      width: 40px; height: 40px;
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; margin-bottom: 16px;
-    }
-
-    .step h3 {
-      font-size: 16px; font-weight: 600;
-      margin-bottom: 8px; letter-spacing: -0.01em;
-    }
-
-    .step p {
-      font-size: 14px; color: var(--text-1); line-height: 1.6;
-    }
-
-    .step-code {
-      margin-top: 16px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 10px 12px;
-      font-family: 'DM Mono', monospace;
-      font-size: 12px; color: var(--accent);
-    }
-
-    /* ── Features ────────────────────────────────────────────────── */
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px; margin-top: 48px;
-    }
-
-    .feature {
-      background: var(--bg-1);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 24px;
-      transition: border-color 0.2s;
-    }
-    .feature:hover { border-color: var(--border-hi); }
-
-    .feature-icon {
-      width: 36px; height: 36px;
-      background: var(--bg-3);
-      border: 1px solid var(--border-hi);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; margin-bottom: 14px;
-    }
-
-    .feature h3 {
-      font-size: 15px; font-weight: 600;
-      margin-bottom: 8px; letter-spacing: -0.01em;
-    }
-
-    .feature p {
-      font-size: 13px; color: var(--text-1); line-height: 1.6;
-    }
-
-    /* ── Solvers ─────────────────────────────────────────────────── */
-    .solvers {
-      background: var(--bg-1);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .solver-chips {
-      display: flex; gap: 12px; flex-wrap: wrap; margin-top: 32px;
-    }
-
-    .solver-chip {
-      background: var(--bg-2);
-      border: 1px solid var(--border-hi);
-      border-radius: 100px;
-      padding: 8px 18px;
-      font-family: 'DM Mono', monospace;
-      font-size: 13px; font-weight: 500;
-      display: flex; align-items: center; gap: 8px;
-    }
-
-    .solver-chip.live { border-color: rgba(0,229,160,0.3); color: var(--green); background: rgba(0,229,160,0.05); }
-    .solver-chip.soon { color: var(--text-2); }
-    .chip-dot { width: 6px; height: 6px; border-radius: 50%; }
-
-    /* ── CTA ─────────────────────────────────────────────────────── */
-    .cta-section { text-align: center; }
-
-    .cta-box {
-      background: var(--bg-1);
-      border: 1px solid var(--border-hi);
-      border-radius: 16px;
-      padding: 64px 48px;
-      position: relative; overflow: hidden;
-    }
-
-    .cta-box::before {
-      content: '';
-      position: absolute; top: -40%; left: 50%; transform: translateX(-50%);
-      width: 400px; height: 300px;
-      background: radial-gradient(ellipse, rgba(0,212,255,0.07) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .cta-box h2 { margin-bottom: 12px; }
-    .cta-box p  { color: var(--text-1); font-size: 17px; margin-bottom: 36px; }
-
-    .cta-form {
-      display: flex; gap: 10px;
-      max-width: 420px; margin: 0 auto;
-    }
-
-    /* ── Footer ──────────────────────────────────────────────────── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 32px 0;
-    }
-
-    .footer-inner {
-      max-width: var(--max); margin: 0 auto; padding: 0 24px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-
-    .footer-links {
-      display: flex; gap: 24px; list-style: none;
-    }
-
-    .footer-links a {
-      font-size: 13px; color: var(--text-2);
-      text-decoration: none; transition: color 0.15s;
-    }
-    .footer-links a:hover { color: var(--text-1); }
-
-    /* ── Success state ───────────────────────────────────────────── */
-    .success-msg {
-      display: none;
-      color: var(--green);
-      font-size: 14px; margin-top: 12px;
-      font-family: 'DM Mono', monospace;
-    }
-
-    /* ── Responsive ──────────────────────────────────────────────── */
-    @media (max-width: 768px) {
-      .problem-grid,
-      .steps,
-      .features-grid { grid-template-columns: 1fr; }
-      .email-form, .cta-form { flex-direction: column; }
-      .nav-links { display: none; }
-      h1 { font-size: 36px; }
-      .preview-content { grid-template-columns: 1fr; }
-      .preview-sidebar { display: none; }
-    }
-  </style>
+  <title>SimHub — Track and compare your LS-DYNA runs</title>
+  <meta name="description" content="SimHub keeps a searchable record of your LS-DYNA runs: validated key results, input deck, units, side-by-side comparison and CSV export. Extraction runs on your machine; only a ~50 KB summary per run is uploaded to a server in Germany. Private beta."/>
+  <link rel="canonical" href="https://simhub-ai.de/"/>
+  <meta name="theme-color" content="#0a0e14"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:url" content="https://simhub-ai.de/"/>
+  <meta property="og:site_name" content="SimHub"/>
+  <meta property="og:title" content="SimHub — Track and compare your LS-DYNA runs"/>
+  <meta property="og:description" content="A searchable record of every LS-DYNA run: validated results, input deck and units, side by side. Local extraction, ~50 KB summary per run, hosted in Germany. Private beta."/>
+  <meta property="og:image" content="https://simhub-ai.de/img/og-image.jpg"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+  <meta property="og:image:alt" content="The SimHub dashboard showing total runs, peak values and a list of recent LS-DYNA runs."/>
+  <meta name="twitter:card" content="summary_large_image"/>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2300d4ff'/%3E%3Cpath d='M5 24L11 8L19 18L23 13L28 24H5Z' fill='%230a0e14'/%3E%3C/svg%3E"/>
+  <link rel="preload" href="fonts/dm-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="css/site.css"/>
 </head>
 <body>
 
 <!-- ── Nav ─────────────────────────────────────────────────────────────── -->
 <nav>
   <div class="nav-inner">
-    <a href="#" class="logo">
+    <a href="#" class="logo" aria-label="SimHub home">
       <div class="logo-mark">
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
           <path d="M2 14L6 4L11 10L13 7L16 14H2Z" fill="#0a0e14"/>
         </svg>
       </div>
@@ -553,262 +38,302 @@
     <ul class="nav-links">
       <li><a href="#how">How it works</a></li>
       <li><a href="#features">Features</a></li>
+      <li><a href="#assistant">Assistant</a></li>
       <li><a href="#solvers">Solvers</a></li>
     </ul>
-    <a href="#waitlist" class="btn btn-primary">Join Waitlist →</a>
+    <a href="#waitlist" class="btn btn-primary">Join the beta →</a>
   </div>
 </nav>
+
+<main>
 
 <!-- ── Hero ────────────────────────────────────────────────────────────── -->
 <section class="hero">
   <div class="container">
-    <div class="hero-eyebrow">Now in private beta · LS-DYNA + Abaqus</div>
+    <div class="hero-eyebrow">Private beta · LS-DYNA</div>
     <h1>
-      <em>GitHub</em> for your<br/>
-      simulation results
+      Every LS-DYNA run,<br/>
+      <em>findable</em> and comparable
     </h1>
     <p class="hero-sub">
-      SimHub stores, versions and compares FEA output files from LS-DYNA and Abaqus.
-      Extract locally. Analyse anywhere.
+      SimHub keeps a searchable record of your simulation runs: key results, input deck and units,
+      next to each other. A small agent does the extraction on your machine. Only a ~50&nbsp;KB summary
+      per run is uploaded, and your d3plot files stay where they are.
     </p>
 
-    <form class="email-form" onsubmit="handleSubmit(event)" id="hero-form">
-      <input type="email" class="email-input" placeholder="your@company.com" required id="hero-email"/>
-      <button type="submit" class="btn btn-primary">Join Waitlist →</button>
+    <form class="email-form waitlist-form" id="hero-form" novalidate>
+      <label for="hero-email" class="hp-field">Email address</label>
+      <input type="email" class="email-input" placeholder="you@company.com" required id="hero-email" name="EMAIL" autocomplete="email"/>
+      <div class="hp-field" aria-hidden="true"><input type="text" name="email_address_check" tabindex="-1" autocomplete="off"/></div>
+      <button type="submit" class="btn btn-primary">Join the beta →</button>
     </form>
-    <p class="hero-note">No credit card. No spam. Early access for FEA engineers.</p>
-    <p class="success-msg" id="hero-success">✓ You're on the list. We'll be in touch.</p>
+    <p class="form-note">We'll only use your email to contact you about SimHub. You'll confirm by email (double opt-in). <a href="datenschutz.html">Privacy policy</a></p>
+    <p class="form-status" role="status" aria-live="polite"></p>
 
-    <!-- Dashboard preview -->
-    <div class="dashboard-preview">
-      <div class="preview-frame">
-        <div class="preview-bar">
+    <figure class="shot">
+      <div class="shot-frame">
+        <div class="shot-bar">
           <div class="dot" style="background:#ff5f57"></div>
           <div class="dot" style="background:#ffbd2e"></div>
           <div class="dot" style="background:#28ca41"></div>
-          <span style="margin-left:12px;font-size:12px;color:var(--text-2);font-family:'DM Mono',monospace">app.simhub-ai.de</span>
+          <span>app.simhub-ai.de</span>
         </div>
-        <div class="preview-content">
-          <div class="preview-sidebar">
-            <div style="font-size:9px;color:var(--text-2);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px">SIMULATION RUNS</div>
-            <div class="preview-run active">
-              <div class="preview-run-label">RUN-A · RUN #5</div>
-              <div class="preview-run-val">1.989e+00</div>
-              <div style="font-size:10px;color:var(--text-2)">peak displacement</div>
-            </div>
-            <div class="preview-run">
-              <div class="preview-run-label" style="color:var(--orange)">RUN-B · RUN #3</div>
-              <div class="preview-run-val">1.989e+00</div>
-              <div style="font-size:10px;color:var(--text-2)">peak displacement</div>
-            </div>
-            <div class="preview-run">
-              <div style="font-size:12px;color:var(--text-2)">Run #2</div>
-              <div style="font-size:10px;color:var(--text-2)">2 May 2026</div>
-            </div>
-          </div>
-
-          <div class="preview-charts">
-            <!-- Stat cards -->
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
-              <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:10px;border-top:2px solid var(--accent)">
-                <div style="font-size:9px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">PEAK DISP</div>
-                <div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent)">1.989e+0</div>
-              </div>
-              <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:10px;border-top:2px solid var(--red)">
-                <div style="font-size:9px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">PEAK VM STRESS</div>
-                <div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace;color:var(--red)">8.30e+08</div>
-              </div>
-              <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:10px;border-top:2px solid var(--green)">
-                <div style="font-size:9px;color:var(--text-2);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px">TOTAL RUNS</div>
-                <div style="font-size:18px;font-weight:700;font-family:'DM Mono',monospace;color:var(--green)">5</div>
-              </div>
-            </div>
-
-            <!-- Chart preview -->
-            <div style="background:var(--bg-3);border:1px solid var(--border);border-radius:6px;padding:14px">
-              <div class="preview-chart-header">MAX NODE RESULTANT DISPLACEMENT VS TIME</div>
-              <svg class="chart-svg" viewBox="0 0 400 80">
-                <line x1="0" y1="78" x2="400" y2="78" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-                <line x1="0" y1="40" x2="400" y2="40" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
-                <!-- RUN-A displacement curve -->
-                <polyline points="0,10 40,13 80,17 120,22 160,28 200,34 240,40 280,46 320,52 360,57 400,62"
-                  fill="none" stroke="#00d4ff" stroke-width="1.5"/>
-                <circle cx="0"   cy="10" r="2.5" fill="#00d4ff"/>
-                <circle cx="200" cy="34" r="2.5" fill="#00d4ff"/>
-                <circle cx="400" cy="62" r="2.5" fill="#00d4ff"/>
-                <!-- RUN-B displacement curve -->
-                <polyline points="0,12 40,15 80,20 120,26 160,33 200,40 240,47 280,53 320,59 360,64 400,68"
-                  fill="none" stroke="#ff8c42" stroke-width="1.5" stroke-dasharray="4 2"/>
-              </svg>
-              <div style="display:flex;gap:16px;margin-top:8px">
-                <div style="display:flex;align-items:center;gap:5px"><div style="width:16px;height:2px;background:#00d4ff;border-radius:1px"></div><span style="font-size:10px;color:var(--text-2)">Run #5</span></div>
-                <div style="display:flex;align-items:center;gap:5px"><div style="width:16px;height:2px;background:#ff8c42;border-radius:1px;opacity:0.8"></div><span style="font-size:10px;color:var(--text-2)">Run #3</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <img src="img/dashboard.webp" width="1600" height="575"
+             alt="SimHub dashboard: 14 stored runs, split into 13 transient, 1 modal and 0 FRA, with peak displacement and peak von Mises stress across transient runs, and a table of recent LS-DYNA runs with name, element type, peak displacement and date."/>
       </div>
-    </div>
+      <figcaption class="shot-caption">The SimHub dashboard (v0.12.0) with real test runs.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ── Trust strip ──────────────────────────────────────────────────────── -->
+<section class="trust" aria-label="About SimHub">
+  <div class="container">
+    <ul class="trust-list">
+      <li class="trust-item">
+        <a class="trust-tile" href="https://campusfounders.de" target="_blank" rel="noopener">
+          <img src="img/campus-founders-logo.png" width="800" height="183" alt="Campus Founders"/>
+        </a>
+        <span>Officially part of the Campus Founders Incubator, <strong>Batch #6 (2026)</strong></span>
+      </li>
+      <li class="trust-item">
+        <span class="trust-check" aria-hidden="true">✓</span>
+        <span>Results validated against <strong>LS-PrePost</strong></span>
+      </li>
+      <li class="trust-item">
+        <span class="trust-check" aria-hidden="true">✓</span>
+        <span><strong>Hosted in Germany</strong> — your simulation files never leave your machine</span>
+      </li>
+    </ul>
   </div>
 </section>
 
 <!-- ── Problem ──────────────────────────────────────────────────────────── -->
-<section class="problem" id="problem">
+<section id="problem">
   <div class="container">
     <div class="problem-grid">
       <div>
-        <p class="section-label">The Problem</p>
-        <h2>FEA results live in files nobody can find</h2>
+        <p class="section-label">The problem</p>
+        <h2>FEA results live in folders nobody can search</h2>
         <p class="section-sub">
-          Simulation engineers run dozens of variants. Results are buried in folders,
-          named inconsistently, impossible to compare, and lost when someone leaves the team.
+          You run variant after variant. A few weeks later the question is simple ("which run had the
+          lower peak stress, and with which material card?") and answering it means reopening
+          files one by one.
         </p>
         <ul class="pain-list">
-          <li>
-            <span class="pain-icon">✕</span>
-            <span>Results scattered across drives — no central store</span>
-          </li>
-          <li>
-            <span class="pain-icon">✕</span>
-            <span>No way to compare Run A vs Run B without reopening both in the solver</span>
-          </li>
-          <li>
-            <span class="pain-icon">✕</span>
-            <span>Files are 10–50GB — too large to share or back up easily</span>
-          </li>
-          <li>
-            <span class="pain-icon">✕</span>
-            <span>No version history — "which mesh gave the lowest stress?" is unanswerable</span>
-          </li>
+          <li><span class="pain-icon" aria-hidden="true">✕</span><span>Results spread across local drives and cluster scratch, named by hand</span></li>
+          <li><span class="pain-icon" aria-hidden="true">✕</span><span>Comparing two runs means loading both in the post-processor again</span></li>
+          <li><span class="pain-icon" aria-hidden="true">✕</span><span>Result files get large, so nobody wants to copy them around or keep every variant</span></li>
+          <li><span class="pain-icon" aria-hidden="true">✕</span><span>The input deck that produced a result isn't recorded next to it</span></li>
         </ul>
       </div>
-      <div class="terminal">
+      <div class="terminal" role="img" aria-label="Illustration: a folder full of inconsistently named d3plot archives">
         <div class="terminal-bar">
           <div class="dot" style="background:#ff5f57"></div>
           <div class="dot" style="background:#ffbd2e"></div>
           <div class="dot" style="background:#28ca41"></div>
+          <span>illustration</span>
         </div>
         <div class="t-line t-comment"># Where are the results from last Tuesday?</div>
-        <div class="t-line"><span class="t-cmd">ls</span> <span class="t-path">C:\Projects\crash\</span></div>
+        <div class="t-line"><span class="t-cmd">ls</span> <span class="t-path">crash_study/</span></div>
         <div class="t-line t-out">d3plot_final_v2_FINAL.zip</div>
         <div class="t-line t-out">d3plot_final_v2_FINAL_2.zip</div>
         <div class="t-line t-out">d3plot_ACTUAL_FINAL.zip</div>
         <div class="t-line t-out">d3plot_use_this_one.zip</div>
         <div class="t-line t-err" style="margin-top:12px"># Which one had the lower peak stress?</div>
-        <div class="t-line t-err"># No idea. Open them all and check manually.</div>
+        <div class="t-line t-err"># And which deck was it run with?</div>
         <br/>
-        <div class="t-line t-comment"># With SimHub:</div>
-        <div class="t-line"><span class="t-cmd">python agent.py</span> <span class="t-path">d3plot</span> <span style="color:var(--text-1)">"Crash v3"</span></div>
-        <div class="t-line t-out">✓ Run #12 stored · Peak stress: 8.30e+08 Pa</div>
-        <div class="t-line t-out">✓ View at app.simhub-ai.de/runs/12</div>
+        <div class="t-line t-comment"># With SimHub, each run gets one record:</div>
+        <div class="t-line t-ok">  name · solver · date · steps</div>
+        <div class="t-line t-ok">  six validated result values + time histories</div>
+        <div class="t-line t-ok">  materials · contacts · boundaries · units</div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- ── How it works ─────────────────────────────────────────────────────── -->
-<section id="how">
+<section id="how" class="band">
   <div class="container">
     <p class="section-label">How it works</p>
-    <h2>Three steps. One command.</h2>
-    <p class="section-sub">SimHub runs entirely locally on your machine for extraction — only the results travel to the cloud.</p>
+    <h2>Local extraction, a small summary, a browser dashboard</h2>
+    <p class="section-sub">The heavy lifting happens on your machine. The server only ever sees the summary.</p>
 
     <div class="steps">
       <div class="step">
         <div class="step-num">01 —</div>
-        <div class="step-icon" style="background:rgba(0,212,255,0.1)">📂</div>
         <h3>Extract locally</h3>
-        <p>The SimHub agent reads your d3plot or .odb file directly on your machine. Raw files never leave your computer — your IP is protected.</p>
-        <div class="step-code">python agent.py path/to/d3plot</div>
+        <p>The SimHub agent (Python) runs on your workstation. It reads the LS-DYNA d3plot results and the .k input deck where they already are. The result files are never uploaded.</p>
+        <div class="step-code">d3plot + .k → summary</div>
       </div>
       <div class="step">
         <div class="step-num">02 —</div>
-        <div class="step-icon" style="background:rgba(0,229,160,0.1)">⬆</div>
-        <h3>Push to SimHub</h3>
-        <p>Extracted results (~50KB) are pushed to your SimHub workspace. Version history, project grouping, and metadata stored automatically.</p>
-        <div class="step-code">✓ Run #12 stored in 2.3s</div>
+        <h3>Upload a ~50 KB summary</h3>
+        <p>The agent sends the extracted summary for that run to the SimHub server in Germany, authenticated with your personal API key. It's stored in your account, and only you can see it.</p>
+        <div class="step-code">~50 KB per run · EU-hosted</div>
       </div>
       <div class="step">
         <div class="step-num">03 —</div>
-        <div class="step-icon" style="background:rgba(255,140,66,0.1)">📊</div>
-        <h3>Analyse anywhere</h3>
-        <p>Open your dashboard from any browser. Compare displacement and von Mises stress across runs. Share results with your team.</p>
-        <div class="step-code">app.simhub-ai.de/runs</div>
+        <h3>Inspect and compare</h3>
+        <p>Sign in at app.simhub-ai.de. Search and filter your runs, put two of them side by side, check which deck they came from and export the numbers as CSV.</p>
+        <div class="step-code">app.simhub-ai.de</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── Features ─────────────────────────────────────────────────────────── -->
-<section id="features" style="background:var(--bg-1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+<!-- ── Features / screens ───────────────────────────────────────────────── -->
+<section id="features">
   <div class="container">
     <p class="section-label">Features</p>
-    <h2>Everything a simulation engineer needs</h2>
+    <h2>What's in v0.12 today</h2>
+    <p class="section-sub">Everything below is live in the private beta. No mock-ups: these are screenshots of the app.</p>
+
+    <div class="screens">
+      <div class="screen-row">
+        <div class="screen-text">
+          <h3>A run list you can actually search</h3>
+          <p>Every uploaded run shows up with its solver, peak displacement, peak von Mises stress, number of steps and date.</p>
+          <ul>
+            <li>Search by run name or file</li>
+            <li>Filter by solver and minimum peak displacement</li>
+            <li>Pick any two runs as A and B to compare</li>
+          </ul>
+        </div>
+        <figure class="shot">
+          <div class="shot-frame">
+            <img src="img/runs-list.webp" width="1600" height="725" loading="lazy"
+                 alt="SimHub Simulation Runs page: a search field, a solver filter and a minimum peak displacement filter above a table of LS-DYNA runs with columns for run name, solver, peak displacement, peak von Mises stress, steps, date and A/B compare buttons."/>
+          </div>
+        </figure>
+      </div>
+
+      <div class="screen-row flip">
+        <div class="screen-text">
+          <h3>Two runs, side by side</h3>
+          <p>Resultant displacement and peak von Mises stress over time on shared axes, the step-by-step numbers, and all six result values for A and B next to each other.</p>
+          <ul>
+            <li>Copy the table or download it as CSV</li>
+            <li>A per-step numbers table under the charts</li>
+            <li>No colour-coded verdicts. SimHub shows the numbers and the judgement stays with you</li>
+          </ul>
+        </div>
+        <figure class="shot">
+          <div class="shot-frame">
+            <img src="img/compare.webp" width="1600" height="882" loading="lazy"
+                 alt="SimHub comparison of two runs: line charts of resultant displacement and peak von Mises stress versus time for run A and run B, a numerical table per time step with Copy and Download CSV buttons, and result cards for displacement, von Mises stress, kinetic, internal and total energy and effective plastic strain, each marked validated."/>
+          </div>
+        </figure>
+      </div>
+
+      <div class="screen-row">
+        <div class="screen-text">
+          <h3>Input deck traceability</h3>
+          <p>SimHub reads the .k input deck along with the results, so each run records the model that produced it.</p>
+          <ul>
+            <li>Materials, contacts and boundary conditions</li>
+            <li>Termination time and unit system, marked when inferred from the deck</li>
+            <li>A deck fingerprint, so you know which file it was</li>
+          </ul>
+        </div>
+        <figure class="shot">
+          <div class="shot-frame">
+            <img src="img/deck-trace.webp" width="1600" height="679" loading="lazy"
+                 alt="SimHub Simulation / Mesh Data page: model lineage captured from the input deck, listing the deck file name, a deck fingerprint, materials such as Piecewise Linear Plasticity, the SPC boundary set, eroding surface-to-surface contacts, termination time 0.01 s and units m / kg / s inferred from the deck."/>
+          </div>
+        </figure>
+      </div>
+    </div>
 
     <div class="features-grid">
       <div class="feature">
-        <div class="feature-icon">⬡</div>
-        <h3>Run versioning</h3>
-        <p>Every simulation push creates a versioned record. Go back to any run, see exactly what changed, and understand why results differ.</p>
+        <div class="feature-icon" aria-hidden="true">✓</div>
+        <h3>Six validated result types</h3>
+        <p>Displacement, von Mises stress (solid and shell), kinetic, internal and total energy, and effective plastic strain, each checked against LS-PrePost.</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">◈</div>
-        <h3>Delta analytics</h3>
-        <p>Select two runs and instantly see variance in peak stress, displacement, and timesteps. Green means improvement, orange means regression.</p>
+        <div class="feature-icon" aria-hidden="true">⌕</div>
+        <h3>Search and filters</h3>
+        <p>Find a run by name or file, narrow the list by solver or peak displacement, and stop guessing from folder names.</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">◉</div>
-        <h3>Dual result charts</h3>
-        <p>Displacement and von Mises stress plotted side by side over time. Overlay multiple runs on the same axes for direct comparison.</p>
+        <div class="feature-icon" aria-hidden="true">⇄</div>
+        <h3>A/B comparison</h3>
+        <p>Time histories on shared axes and key values next to each other. Differences are shown, not judged.</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">⌥</div>
-        <h3>IP-safe extraction</h3>
-        <p>Raw files stay on your machine. Only extracted scalars travel to the cloud. Enterprise IT teams can approve this without hesitation.</p>
+        <div class="feature-icon" aria-hidden="true">⤓</div>
+        <h3>CSV export</h3>
+        <p>Take the numbers into Excel, Python or your report. The data stays yours.</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">⬗</div>
-        <h3>Project grouping</h3>
-        <p>Organise runs into projects — Crash Test Series A, Fatigue Study v2. Like GitHub repositories, but for simulation campaigns.</p>
+        <div class="feature-icon" aria-hidden="true">◈</div>
+        <h3>Deck traceability</h3>
+        <p>Materials, contacts, boundaries and units stored per run, read straight from the .k file.</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">⬡</div>
-        <h3>One-command push</h3>
-        <p>A single terminal command pushes any simulation. Fits into existing HPC workflows. No GUI required, no solver license needed.</p>
+        <div class="feature-icon" aria-hidden="true">⌂</div>
+        <h3>Local-first and private</h3>
+        <p>Result files stay on your machine. Secure, EU-hosted sign-in, personal API keys for the agent, and each user sees only their own runs.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── AI assistant ─────────────────────────────────────────────────────── -->
+<section id="assistant" class="band">
+  <div class="container">
+    <div class="assistant-grid">
+      <div>
+        <p class="section-label">Optional · AI assistant</p>
+        <h2>Ask questions about your own runs</h2>
+        <p class="section-sub">
+          For example: "What was the peak von Mises stress in my last run, and in what units?"
+          The assistant looks it up in your stored runs and tells you where the number came from.
+        </p>
+        <ul class="rules">
+          <li><span class="tag">off by default</span><p><strong>Opt-in.</strong> The assistant does nothing until you switch it on.</p></li>
+          <li><span class="tag">cites runs</span><p><strong>Every number names its source run</strong>, so you can check it in the run itself.</p></li>
+          <li><span class="tag">honest units</span><p><strong>Units are stated as they are.</strong> If the unit is inferred or unknown, it says so.</p></li>
+          <li><span class="tag">no verdicts</span><p><strong>It never gives engineering verdicts.</strong> No "this design passes", no "this run is better". That call stays with the engineer.</p></li>
+          <li><span class="tag">disclosed</span><p><strong>When it's enabled, your question and the run data needed to answer it are sent to Anthropic</strong> to generate the answer. The app says this right where you type.</p></li>
+        </ul>
+      </div>
+      <figure class="shot assistant-shot">
+        <div class="shot-frame">
+          <img src="img/assistant.webp" width="388" height="310" loading="lazy"
+               alt="The SimHub assistant panel: a short explanation that it answers questions about your own runs and cites the run each number came from, an input box labelled Ask about your runs, and a notice that questions and the run data needed to answer them are sent to Anthropic."/>
+        </div>
+      </figure>
     </div>
   </div>
 </section>
 
 <!-- ── Solvers ───────────────────────────────────────────────────────────── -->
-<section class="solvers" id="solvers">
+<section id="solvers">
   <div class="container">
-    <p class="section-label">Solver Support</p>
-    <h2>Works with the solvers you already use</h2>
-    <p class="section-sub">SimHub extracts from native output files. No export step, no format conversion.</p>
+    <p class="section-label">Solver support</p>
+    <h2>LS-DYNA today. Abaqus next.</h2>
+    <p class="section-sub">SimHub reads native LS-DYNA output and input files: no export step, no format conversion.</p>
 
     <div class="solver-chips">
-      <div class="solver-chip live">
-        <div class="chip-dot" style="background:var(--green)"></div>
-        LS-DYNA (.d3plot)
-      </div>
-      <div class="solver-chip live">
-        <div class="chip-dot" style="background:var(--green)"></div>
-        Displacement · Von Mises Stress
-      </div>
-      <div class="solver-chip soon">
-        <div class="chip-dot" style="background:var(--text-2)"></div>
-        Abaqus (.odb) — coming soon
-      </div>
-      <div class="solver-chip soon">
-        <div class="chip-dot" style="background:var(--text-2)"></div>
-        Nastran (.op2) — planned
-      </div>
-      <div class="solver-chip soon">
-        <div class="chip-dot" style="background:var(--text-2)"></div>
-        OpenFOAM — planned
-      </div>
+      <div class="solver-chip live"><span class="chip-dot"></span>LS-DYNA (d3plot + .k) — live</div>
+      <div class="solver-chip next"><span class="chip-dot"></span>Abaqus (.odb) — next</div>
+      <div class="solver-chip"><span class="chip-dot"></span>Nastran (.op2) — planned</div>
+      <div class="solver-chip"><span class="chip-dot"></span>OpenFOAM — planned</div>
     </div>
+
+    <div class="result-types" aria-label="LS-DYNA result types">
+      <div class="result-type"><span>Displacement</span><span>✓ vs LS-PrePost</span></div>
+      <div class="result-type"><span>von Mises stress (solid / shell)</span><span>✓ vs LS-PrePost</span></div>
+      <div class="result-type"><span>Kinetic energy</span><span>✓ vs LS-PrePost</span></div>
+      <div class="result-type"><span>Internal energy</span><span>✓ vs LS-PrePost</span></div>
+      <div class="result-type"><span>Total energy</span><span>✓ vs LS-PrePost</span></div>
+      <div class="result-type"><span>Effective plastic strain</span><span>✓ vs LS-PrePost</span></div>
+    </div>
+
+    <p class="not-yet"><strong>Not there yet:</strong> team sharing and project workspaces, Abaqus and any solver other
+      than LS-DYNA. For now every account is a single user and sees only their own runs.</p>
   </div>
 </section>
 
@@ -816,25 +341,31 @@
 <section class="cta-section" id="waitlist">
   <div class="container">
     <div class="cta-box">
-      <p class="section-label">Early Access</p>
-      <h2>Be first when we launch</h2>
-      <p>SimHub is in private beta. Join the waitlist and get early access, direct input on the roadmap, and lifetime founding user pricing.</p>
-      <form class="cta-form" onsubmit="handleSubmit(event)" id="cta-form">
-        <input type="email" class="email-input" placeholder="your@company.com" required id="cta-email"/>
-        <button type="submit" class="btn btn-primary">Join Waitlist →</button>
+      <p class="section-label">Private beta</p>
+      <h2>Help shape the first pilots</h2>
+      <p class="lead">SimHub is preparing its first pilots. Leave your email and we'll get in touch about access.
+        You'll be talking directly to the person building it, and your feedback decides what comes next.</p>
+      <form class="email-form waitlist-form" id="cta-form" novalidate>
+        <label for="cta-email" class="hp-field">Email address</label>
+        <input type="email" class="email-input" placeholder="you@company.com" required id="cta-email" name="EMAIL" autocomplete="email"/>
+        <div class="hp-field" aria-hidden="true"><input type="text" name="email_address_check" tabindex="-1" autocomplete="off"/></div>
+        <button type="submit" class="btn btn-primary">Join the beta →</button>
       </form>
-      <p class="success-msg" id="cta-success">✓ You're on the list. We'll be in touch.</p>
-      <p style="font-size:12px;color:var(--text-2);margin-top:14px">Used by engineers at automotive, aerospace and defence companies.</p>
+      <p class="form-note">We'll only use your email to contact you about SimHub. You'll confirm by email (double opt-in). <a href="datenschutz.html">Privacy policy</a></p>
+      <p class="form-status" role="status" aria-live="polite"></p>
+      <p class="cta-bottom">Built for simulation engineers in small teams, consultancies and research groups.</p>
     </div>
   </div>
 </section>
 
+</main>
+
 <!-- ── Footer ────────────────────────────────────────────────────────────── -->
 <footer>
   <div class="footer-inner">
-    <a href="#" class="logo">
+    <a href="#" class="logo" aria-label="SimHub home">
       <div class="logo-mark" style="width:24px;height:24px">
-        <svg width="13" height="13" viewBox="0 0 18 18" fill="none">
+        <svg width="13" height="13" viewBox="0 0 18 18" fill="none" aria-hidden="true">
           <path d="M2 14L6 4L11 10L13 7L16 14H2Z" fill="#0a0e14"/>
         </svg>
       </div>
@@ -842,51 +373,60 @@
     </a>
     <ul class="footer-links">
       <li><a href="mailto:hello@simhub-ai.de">hello@simhub-ai.de</a></li>
-      <li><a href="#">Privacy</a></li>
-      <li><a href="#">Imprint</a></li>
+      <li><a href="https://app.simhub-ai.de">Sign in</a></li>
+      <li><a href="impressum.html">Impressum</a></li>
+      <li><a href="datenschutz.html">Datenschutz</a></li>
     </ul>
-    <span style="font-size:12px;color:var(--text-2)">© 2026 SimHub. Made in Germany.</span>
+    <span class="footer-copy">© 2026 SimHub · Made in Germany</span>
   </div>
 </footer>
 
 <script>
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const form   = e.target;
-    const email  = form.querySelector('input[type="email"]').value;
-    const formId = form.id;
+  // Waitlist → Brevo hosted form (public sibforms endpoint; no API key, no secret).
+  // Brevo sends no CORS headers here, so the request must be "no-cors" and the
+  // response is opaque: we can tell that the request left the browser, but NOT
+  // whether Brevo accepted it. The double-opt-in email is the real confirmation,
+  // so the message says exactly that instead of claiming success.
+  const BREVO_FORM_URL = "https://f37ae80a.sibforms.com/serve/MUIFAA7rIAqPwuBSOhqX-jOTSEzsG1YHrZCgPADhjt1lfAXZzYuhr_YxZlaATTziDFUKLUNKBmtsgM_yOVhgiV8YmG0PSHikoTtCaIpfEoI_MuRagswLbKu0t7qxYqCc1E3XQVmdtQ4iM3eF4g33v2sZWe3n581KR3uju65nI_aT_wLZH20WJ03q1AwKw4AQKktzCkALqxwGcYcOMw==";
+  const CONTACT = '<a href="mailto:hello@simhub-ai.de">hello@simhub-ai.de</a>';
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-    const btn = form.querySelector('button');
-    btn.textContent = 'Joining...';
-    btn.disabled = true;
+  document.querySelectorAll('.waitlist-form').forEach((form) => {
+    const status = form.parentElement.querySelector('.form-status');
+    const btn    = form.querySelector('button');
+    const input  = form.querySelector('input[type="email"]');
+    const label  = btn.textContent;
 
-    try {
-      const brevoForm = new FormData();
-      brevoForm.append("EMAIL", email);
-      brevoForm.append("email_address_check", "");
-      brevoForm.append("locale", "en");
-      brevoForm.append("html_type", "simple");
+    const show = (cls, html) => { status.className = 'form-status ' + cls; status.innerHTML = html; };
 
-      await fetch(
-        "https://f37ae80a.sibforms.com/serve/MUIFAA7rIAqPwuBSOhqX-jOTSEzsG1YHrZCgPADhjt1lfAXZzYuhr_YxZlaATTziDFUKLUNKBmtsgM_yOVhgiV8YmG0PSHikoTtCaIpfEoI_MuRagswLbKu0t7qxYqCc1E3XQVmdtQ4iM3eF4g33v2sZWe3n581KR3uju65nI_aT_wLZH20WJ03q1AwKw4AQKktzCkALqxwGcYcOMw==",
-        {
-          method: "POST",
-          body:   brevoForm,
-          mode:   "no-cors"   // Brevo doesn't send CORS headers on this endpoint
-        }
-      );
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = input.value.trim();
+      if (!EMAIL_RE.test(email)) { show('err', 'Please enter a valid email address.'); input.focus(); return; }
+      if (form.querySelector('[name="email_address_check"]').value) return; // honeypot filled: bot
 
-      // no-cors means we can't read the response — assume success
-      form.style.display = 'none';
-      const successId = formId === 'hero-form' ? 'hero-success' : 'cta-success';
-      document.getElementById(successId).style.display = 'block';
+      btn.disabled = true; btn.textContent = 'Sending…'; status.className = 'form-status';
 
-    } catch (err) {
-      btn.textContent = 'Join Waitlist →';
-      btn.disabled    = false;
-      alert('Something went wrong. Please try again.');
-    }
-}
+      const body = new FormData();
+      body.append('EMAIL', email);
+      body.append('email_address_check', '');
+      body.append('locale', 'en');
+      body.append('html_type', 'simple');
+
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 15000);
+      try {
+        await fetch(BREVO_FORM_URL, { method: 'POST', body, mode: 'no-cors', signal: ctrl.signal });
+        form.style.display = 'none';
+        show('ok', 'Almost done: please check your inbox for a confirmation email from SimHub and click the link in it. ' +
+                   'You’re only on the list once you’ve confirmed. Nothing within 15 minutes (check spam)? Write to ' + CONTACT + '.');
+      } catch (err) {
+        btn.disabled = false; btn.textContent = label;
+        show('err', 'That didn’t go through. The request was blocked or your connection dropped (an ad or tracking blocker can cause this). ' +
+                    'Please try again, or write to ' + CONTACT + '.');
+      } finally { clearTimeout(timer); }
+    });
+  });
 </script>
 
 </body>
